@@ -1,0 +1,5 @@
+@partial('_Header')
+<div id="app" class="container">
+    @content()
+</div>
+@partial('_Footer')

@@ -1,0 +1,72 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "4850676b278aa81dffb302aa5537354d",
+    "packages": [
+        {
+            "name": "manaphp/framework",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/manaphp/framework.git",
+                "reference": "0fcde6fd240ac32263e75838b4e53dcf7162e5da"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/manaphp/framework/zipball/0fcde6fd240ac32263e75838b4e53dcf7162e5da",
+                "reference": "0fcde6fd240ac32263e75838b4e53dcf7162e5da",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ManaPHP\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ManaPHP Mark",
+                    "email": "manaphp@qq.com"
+                }
+            ],
+            "description": "The ManaPHP Framework",
+            "homepage": "https://github.com/manaphp/framework",
+            "keywords": [
+                "di",
+                "framework",
+                "laravel",
+                "manaphp",
+                "yii2"
+            ],
+            "support": {
+                "issues": "https://github.com/manaphp/framework/issues",
+                "source": "https://github.com/manaphp/framework/tree/develop"
+            },
+            "time": "2021-03-07T02:18:10+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "manaphp/framework": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
+}

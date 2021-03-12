@@ -1,0 +1,19 @@
+<style>
+    .manaphp_copyright {
+        position: fixed;
+        bottom: 30px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .manaphp_copyright a {
+        color: blue;
+    }
+
+</style>
+
+<div class="manaphp_copyright">
+    <span>故障反馈QQ：439324462</span>
+    <span>视频归相关网站及作者所有，本站不存储任何视频及图片。</span>
+    &copy; {{ $year }} <a href="https://livissnack.com">Doniai解析-LivisSnack</a>
+</div>

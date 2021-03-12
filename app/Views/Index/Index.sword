@@ -1,0 +1,84 @@
+<div class="mana_container">
+    <section class="hero mt-80">
+        <div class="hero-body text-center">
+            <p class="title">
+                抖音无水印在线解析下载
+            </p>
+            <p class="subtitle">
+                抖音限制了解析出来的链接只能手机打开
+            </p>
+        </div>
+
+        <div class="search-box">
+            <div class="field input-fullwidth">
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input is-success" v-model="video_url" type="text" placeholder="打开短视频APP，复制短视频粘贴到输入框，再点击解析...">
+                    <span class="icon is-small is-left">
+                        <img src="/static/imgs/file-search.svg" alt="文件搜索">
+                    </span>
+                    <span class="icon is-small is-right">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </p>
+            </div>
+            <div>
+                <button class="button is-primary" @click="do_parse">解析一下</button>
+            </div>
+        </div>
+
+        <div class="parser-content" v-show="is_show">
+            <div class="parser-box">
+                <div class="video-box">
+                    <h3 class="video-title text-center">{{desc}}</h3>
+                    <video controls="controls" autoplay="autoplay">
+                        <source :src="video_url" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <div class="download-box">
+                <button class="button is-danger" @click="do_download">视频下载</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+@section('js')
+    <script>
+        vm = new App({
+            data: {
+                is_show: false,
+                video_url: '',
+                music_url: '',
+                cover_url: '',
+                desc: ''
+            },
+            methods: {
+                do_parse() {
+                    if (this.video_url === '') {
+                        console.log('解析地址不能为空')
+                        return
+                    }
+                    this.ajax_post("/video/analyze", {video_url: this.video_url}, (res) => {
+                        if (res.video_url !== '' || res.video_url !== undefined) {
+                            this.is_show = true;
+                        }
+                        this.video_url = res.video_url;
+                        this.music_url = res.music_url;
+                        this.cover_url = res.cover_url;
+                        this.desc = res.desc;
+                        console.log(res)
+                    });
+                },
+
+                do_download() {
+                    this.ajax_get(this.video_url, {}, (res) => {
+                        console.log(res)
+                    })
+                    console.log('download video file')
+                }
+            }
+        });
+    </script>
+@append

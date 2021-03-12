@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>{{$this->configure->name}}</title>
+    <link rel="stylesheet" href="/static/css/manaphp.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    @yield('css')
+</head>
+<body>
+<script>var BASE_URL = '{{base_url()}}';</script>
+<div>
+    @flash()
+</div>
+<nav class="navbar is-success" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <h3>Doniai解析</h3>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item">
+                    <img src="/static/imgs/tiktok.svg" alt="抖音">
+                    抖音
+                </a>
+
+                <a class="navbar-item">
+                    <img src="/static/imgs/xigua.svg" alt="西瓜视频">
+                    西瓜视频
+                </a>
+
+                <a class="navbar-item">
+                    <img src="/static/imgs/vigo.svg" alt="火山小视频">
+                    火山小视频
+                </a>
+
+                <a class="navbar-item">
+                    <img src="/static/imgs/youtube.svg" alt="YouTube">
+                    YouTube
+                </a>
+
+                <a class="navbar-item">
+                    哔哩哔哩
+                </a>
+            </div>
+
+            <div class="navbar-end">
+                <a class="navbar-item">
+                    <svg width="24" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><path d="M37 22.0001L34 25.0001L23 14.0001L26 11.0001C27.5 9.50002 33 7.00005 37 11.0001C41 15.0001 38.5 20.5 37 22.0001Z" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 6L37 11" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 25.9999L14 22.9999L25 33.9999L22 36.9999C20.5 38.5 15 41 11 36.9999C7 32.9999 9.5 27.5 11 25.9999Z" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M23 32L27 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 42L11 37" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 25L20 21" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    解析接口
+                </a>
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        语言
+                    </a>
+
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item">
+                            中文
+                        </a>
+                        <a class="navbar-item">
+                            英文
+                        </a>
+                        <a class="navbar-item">
+                            日文
+                        </a>
+                    </div>
+                </div>
+
+                <a class="navbar-item">
+                    登录
+                </a>
+
+                <a class="navbar-item">
+                    注册
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
