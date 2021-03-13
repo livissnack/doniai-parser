@@ -2,6 +2,7 @@
   "name": "doniai/parser",
   "description": "多尼爱视频解析站",
   "type": "project",
+  "version": "1.0.0",
   "require": {
     "manaphp/framework": "dev-master"
   },
