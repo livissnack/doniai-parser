@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'id'         => 'user',
+    'id'         => 'parser',
+    'name'         => 'Doniai短视频解析',
     'env'        => env('APP_ENV', 'prod'),
     'debug'      => env('APP_DEBUG', false),
     'version'    => '1.1.1',
@@ -15,7 +16,7 @@ return [
             'port'                  => 9501,
             'worker_num'            => 2,
             'max_request'           => 1000000,
-            'enable_static_handler' => env('APP_DEBUG', false)
+            'enable_static_handler' => true
         ],
         'db'         => env('DB_URL'),
         'redis'      => env('REDIS_URL'),
