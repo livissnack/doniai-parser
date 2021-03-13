@@ -10,8 +10,20 @@ class VideoController extends Controller
         $host = env('DONIAI_API_HOST');
         $response = http_get($host.'/api/v1.0/analyze/douyin?url='.$parse_url)->body;
         if ($response['code'] === 200) {
-            return $response['data'];
+            $target_url = $response['data']['video_url'];
+            $response1 = http_get($host.'/api/v1.0/util/douyin?url='.$target_url)->body;
+            if ($response1['code'] === 200) {
+                $target_url = $response1['data']['video_url'];
+            }
+            return [
+                'video_url' => $target_url,
+                'music_url' => $response['data']['music_url'],
+                'cover_url' => $response['data']['cover_url'],
+                'desc' => $response['data']['desc'],
+            ];
         }
+
+
         return '请求出错';
     }
 }
