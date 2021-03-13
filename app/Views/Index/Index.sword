@@ -12,7 +12,7 @@
         <div class="search-box">
             <div class="field input-fullwidth">
                 <p class="control has-icons-left has-icons-right">
-                    <input class="input is-success" v-model="target_url" @focus="do_focus" @blur="do_blur" type="text" placeholder="打开短视频APP，复制短视频粘贴到输入框，再点击解析...">
+                    <input class="input is-success" v-model.trim="target_url" @focus="do_focus" @blur="do_blur" type="text" placeholder="打开短视频APP，复制短视频粘贴到输入框，再点击解析...">
                     <span class="icon is-small is-left">
                         <img src="/static/imgs/file-search.svg" alt="文件搜索">
                     </span>

@@ -22,6 +22,16 @@
     text-decoration: none;
 }
 
+.manaphp_copyright > span, .manaphp_copyright > a{
+    margin-right: 6px;
+    font-size: 14px;
+    color: #363636;
+}
+
+.manaphp_copyright > a:hover {
+    text-decoration: underline;
+}
+
 .table a {
     cursor: pointer;
 }

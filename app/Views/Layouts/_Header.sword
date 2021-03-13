@@ -65,31 +65,6 @@
                     解析接口
                 </a>
 
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link">
-                        语言
-                    </a>
-
-                    <div class="navbar-dropdown">
-                        <a class="navbar-item">
-                            <img src="/static/imgs/flags/zh.png" class="flag-logo" alt="简体中文">
-                            <span>简体中文</span>
-                        </a>
-                        <a class="navbar-item">
-                            <img src="/static/imgs/flags/hk.png" class="flag-logo" alt="繁体中文">
-                            <span>繁体中文</span>
-                        </a>
-                        <a class="navbar-item">
-                            <img src="/static/imgs/flags/en.png" class="flag-logo" alt="英文">
-                            <span>英文</span>
-                        </a>
-                        <a class="navbar-item">
-                            <img src="/static/imgs/flags/jp.png" class="flag-logo" alt="日文">
-                            <span>日文</span>
-                        </a>
-                    </div>
-                </div>
-
                 <a class="navbar-item">
                     登录
                 </a>
