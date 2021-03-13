@@ -16,7 +16,7 @@ class VideoController extends Controller
                 $target_url = $response1['data']['video_url'];
             }
             return [
-                'video_url' => $target_url,
+                'video_url' => preg_replace("/^http:/i", "https:", $target_url),
                 'music_url' => $response['data']['music_url'],
                 'cover_url' => $response['data']['cover_url'],
                 'desc' => $response['data']['desc'],
