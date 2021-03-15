@@ -18,7 +18,7 @@ class VideoController extends Controller
         if ($count) {
             $this->redisDb->hIncrBy($this->_request_key, $ip, 1);
         } else {
-            $this->redisDb->hSet('request::records', $ip, 1);
+            $this->redisDb->hSet($this->_request_key, $ip, 1);
             if ($this->redisDb->ttl($this->_request_key) < 0) {
                 $this->redisDb->expire($this->_request_key, seconds('1d'));
             }
