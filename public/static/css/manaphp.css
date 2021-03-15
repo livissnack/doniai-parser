@@ -60,7 +60,8 @@
 }
 
 .input-fullwidth {
-    width: 700px;
+    width: 60vw;
+    max-width: 700px;
 }
 
 .parser-box {

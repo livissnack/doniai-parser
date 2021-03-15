@@ -130,7 +130,12 @@ Vue.prototype.ajax_post = function (url, data, success) {
         }
 
         if (res.data.message !== '') {
-            this.$alert(res.data.message);
+            this.$buefy.snackbar.open({
+                message: res.data.message,
+                type: 'is-warning',
+                position: 'is-bottom-right',
+                actionText: 'MSG'
+            })
         }
         return res
     });
