@@ -15,6 +15,10 @@ class ApiController extends Controller
     {
         $url = input('url', ['string', 'default' => '']);
         $host = param_get('parse_url');
-        return http_get($host.'?url='.$url)->body;
+        $response = http_get($host.'?url='.$url)->body;
+        if ($response['status']) {
+            return $response;
+        }
+        return '解析失败';
     }
 }
