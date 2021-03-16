@@ -10,5 +10,6 @@ class Router extends \ManaPHP\Http\Router
     {
         parent::__construct();
         $this->add('/', 'Index::index');
+        $this->add('/api', 'Api::index');
     }
 }

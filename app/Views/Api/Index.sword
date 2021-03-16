@@ -1,0 +1,66 @@
+<div class="mana_container">
+    <section class="hero mt-80">
+        <div class="hero-body text-center">
+            <p class="title">
+                聚合API市场
+            </p>
+            <p class="subtitle">
+                更多优质的Api，只为服务更优质的你
+            </p>
+        </div>
+
+        <div class="shop-box">
+            <b-field grouped group-multiline>
+                <div class="control">
+                    <h3>美国edu教育网邮箱</h3>
+                </div>
+            </b-field>
+            <b-table :data="items" :bordered="true" :striped="true" :narrowed="true" :hoverable="true" :mobile-cards="true">
+                <b-table-column field="name" label="商品名称" v-slot="{row}">
+                    @{{ row.name }}
+                </b-table-column>
+
+                <b-table-column field="mode" label="发货模式" v-slot="{row}">
+                    <span class="tag">
+                        @{{ row.mode == 1 ? '自动发货' : '手动发货' }}
+                    </span>
+                </b-table-column>
+
+                <b-table-column field="nums" label="库存" v-slot="{row}">
+                    @{{ row.nums }}
+                </b-table-column>
+
+                <b-table-column field="sale_nums" label="销量" v-slot="{row}">
+                    @{{ row.sale_nums }}
+                </b-table-column>
+
+                <b-table-column field="price" label="单价" centered v-slot="{row}">
+                    @{{ row.price }}
+                </b-table-column>
+
+                <b-table-column label="操作" v-slot="{row}">
+                    <b-button type="is-warning is-small">购买</b-button>
+                </b-table-column>
+            </b-table>
+        </div>
+    </section>
+</div>
+
+
+@section('js')
+    <script>
+        vm = new App({
+            data: {
+                items: []
+            },
+            mounted() {
+                this.get_shops()
+            },
+            methods: {
+                get_shops() {
+                    this.ajax_get("/api", (res) => this.items = res)
+                }
+            }
+        });
+    </script>
+@append
