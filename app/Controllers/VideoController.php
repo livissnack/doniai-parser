@@ -43,4 +43,11 @@ class VideoController extends Controller
 
         return '请求出错';
     }
+
+    public function xiguaAction()
+    {
+        $arr = [1, 43, 54, 62, 21, 66, 32, 78, 36, 76, 39];
+
+        return quickSort($arr);
+    }
 }
