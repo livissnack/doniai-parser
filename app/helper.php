@@ -96,3 +96,7 @@ function seqSearch($arr, $k) {
     }
     return -1;
 }
+
+function random_sms_code() {
+    return random_int(200001, 999999);
+}

@@ -5,7 +5,6 @@ namespace ManaPHP\Rpc\Client;
 use ManaPHP\Di\Injectable;
 use ManaPHP\Exception\MisuseException;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Helper\Str;
 use ReflectionMethod;
 
 class Service implements Injectable
@@ -14,11 +13,6 @@ class Service implements Injectable
      * @var mixed
      */
     protected $self;
-
-    /**
-     * @var string
-     */
-    protected $endpoint;
 
     /**
      * @var \ManaPHP\Rpc\ClientInterface
@@ -42,23 +36,11 @@ class Service implements Injectable
     {
         if (is_string($options)) {
             $options = ['endpoint' => $options];
-        }
-
-        if ($endpoint = $options['endpoint'] ?? null) {
-            $path = rtrim(parse_url($endpoint, PHP_URL_PATH), '/');
-            if ($path === '' || $path === '/api') {
-                $class_name = static::class;
-                $service = basename(substr($class_name, strrpos($class_name, '\\') + 1), 'Service');
-
-                $options['endpoint'] = rtrim($endpoint, '/') . '/' . Str::snakelize($service);
-            }
-        }
-
-        if (!$endpoint = $this->endpoint) {
+        } elseif (!isset($options['endpoint'])) {
             throw new MisuseException('missing endpoint config');
         }
 
-        $scheme = parse_url($endpoint, PHP_URL_SCHEME);
+        $scheme = parse_url($options['endpoint'], PHP_URL_SCHEME);
         if ($scheme === 'ws' || $scheme === 'wss') {
             $class = 'ManaPHP\\Rpc\\Client\\Adapter\\Ws';
         } elseif ($scheme === 'http' || $scheme === 'https') {

@@ -1,20 +1,20 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => 'v1.210307.035336',
-    'version' => '1.210307.035336.0',
+    'pretty_version' => '1.0.0',
+    'version' => '1.0.0.0',
     'aliases' => 
     array (
     ),
     'reference' => NULL,
-    'name' => 'manaphp/app-user',
+    'name' => 'doniai/parser',
   ),
   'versions' => 
   array (
-    'manaphp/app-user' => 
+    'doniai/parser' => 
     array (
-      'pretty_version' => 'v1.210307.035336',
-      'version' => '1.210307.035336.0',
+      'pretty_version' => '1.0.0',
+      'version' => '1.0.0.0',
       'aliases' => 
       array (
       ),
@@ -27,7 +27,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '0fcde6fd240ac32263e75838b4e53dcf7162e5da',
+      'reference' => 'acf6aca66945d1fe50c16867f8b87a2fd7a8092e',
     ),
   ),
 );

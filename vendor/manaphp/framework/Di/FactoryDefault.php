@@ -9,6 +9,7 @@ class FactoryDefault extends Container
         parent::__construct();
 
         $this->definitions = [
+            'locale'           => 'ManaPHP\I18n\Locale',
             'eventManager'     => 'ManaPHP\Event\Manager',
             'aopManager'       => 'ManaPHP\Aop\Manager',
             'poolManager'      => 'ManaPHP\Pool\Manager',
@@ -25,7 +26,8 @@ class FactoryDefault extends Container
             'assetBundle'      => 'ManaPHP\Html\Renderer\AssetBundle',
             'cache'            => 'ManaPHP\Caching\Cache\Adapter\Redis',
             'httpClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Curl'],
-            'restClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Stream'],
+            'restClient'       => ['class' => 'ManaPHP\Http\Client', 'engine' => 'ManaPHP\Http\Client\Engine\Fopen'],
+            'downloader'       => 'ManaPHP\Http\Downloader',
             'paginator'        => 'ManaPHP\Data\Paginator',
             'msgQueue'         => 'ManaPHP\Messaging\Queue\Adapter\Redis',
             'swordCompiler'    => 'ManaPHP\Html\Renderer\Engine\Sword\Compiler',
@@ -37,7 +39,6 @@ class FactoryDefault extends Container
             'redisBroker'      => '@redis',
             'mongodb'          => 'ManaPHP\Data\Mongodb',
             'translator'       => 'ManaPHP\I18n\Translator',
-            'rabbitmq'         => 'ManaPHP\Messaging\Amqp',
             'relationManager'  => 'ManaPHP\Data\Relation\Manager',
             'mailer'           => 'ManaPHP\Mailing\Mailer\Adapter\Smtp',
             'bosClient'        => 'ManaPHP\Bos\Client',
@@ -51,6 +52,7 @@ class FactoryDefault extends Container
             'dataDump'         => 'ManaPHP\Debugging\DataDump',
             'cliRunner'        => 'ManaPHP\Cli\Runner',
             'chatClient'       => 'ManaPHP\Ws\Chatting\Client',
+            'amqpClient'       => 'ManaPHP\Amqp\Client',
 
             'backtracePlugin' => 'ManaPHP\Debugging\BacktracePlugin',
             'debuggerPlugin'  => 'ManaPHP\Debugging\DebuggerPlugin',
@@ -63,6 +65,7 @@ class FactoryDefault extends Container
             'redisTracer'    => 'ManaPHP\Data\Redis\Tracer',
             'mailerTracer'   => 'ManaPHP\Mailing\Mailer\Tracer',
             'wsClientTracer' => 'ManaPHP\Ws\Client\Tracer',
+            'amqpTracer'     => 'ManaPHP\Amqp\Tracer',
         ];
     }
 }

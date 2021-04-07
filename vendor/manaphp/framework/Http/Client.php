@@ -4,7 +4,6 @@ namespace ManaPHP\Http;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NonCloneableException;
-use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client\BadGatewayException;
 use ManaPHP\Http\Client\BadRequestException;
 use ManaPHP\Http\Client\ClientErrorException;
@@ -59,11 +58,6 @@ class Client extends Component implements ClientInterface
     protected $user_agent;
 
     /**
-     * @var bool
-     */
-    protected $keepalive = false;
-
-    /**
      * @var int
      */
     protected $pool_size = 4;
@@ -76,7 +70,7 @@ class Client extends Component implements ClientInterface
         if ($engine = $options['engine'] ?? null) {
             $this->engine = str_contains($engine, '\\') ? $engine : "ManaPHP\Http\Client\Engine\\" . ucfirst($engine);
         } else {
-            $this->engine = 'ManaPHP\Http\Client\Engine\Stream';
+            $this->engine = 'ManaPHP\Http\Client\Engine\Fopen';
         }
 
         if (isset($options['proxy'])) {
@@ -97,10 +91,6 @@ class Client extends Component implements ClientInterface
 
         $this->user_agent = $options['user_agent'] ?? self::USER_AGENT_IE;
 
-        if (isset($options['keepalive'])) {
-            $this->keepalive = (bool)$options['keepalive'];
-        }
-
         if (isset($options['pool_size'])) {
             $this->pool_size = (int)$options['pool_size'];
         }
@@ -120,17 +110,13 @@ class Client extends Component implements ClientInterface
      * @param string          $method
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
      */
     public function request($method, $url, $body = null, $headers = [], $options = [])
     {
-        if (is_string($headers)) {
-            $headers = [(str_contains($headers, '://') ? 'Referer' : 'User-Agent') => $headers];
-        }
-
         if (!isset($headers['User-Agent'])) {
             $headers['User-Agent'] = $this->user_agent;
         }
@@ -185,7 +171,31 @@ class Client extends Component implements ClientInterface
             try {
                 $this->fireEvent('httpClient:requesting', compact('method', 'url', 'request'));
 
-                $response = $engine->request($request, $this->keepalive);
+                if ($request->hasFile()) {
+                    $boundary = '------------------------' . bin2hex(random_bytes(8));
+                    $request->headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
+                    $body = $request->buildMultipart($boundary);
+                } else {
+                    $body = $request->body;
+                }
+
+                if (is_array($body)) {
+                    if (isset($request->headers['Content-Type'])
+                        && str_contains(
+                            $request->headers['Content-Type'], 'json'
+                        )
+                    ) {
+                        $body = json_stringify($body);
+                    } else {
+                        $body = http_build_query($body);
+                    }
+                }
+
+                if (is_string($body)) {
+                    $request->headers['Content-Length'] = strlen($body);
+                }
+
+                $response = $engine->request($request, $body);
 
                 $success = true;
             } finally {
@@ -253,7 +263,7 @@ class Client extends Component implements ClientInterface
      * @param string          $method
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -311,7 +321,7 @@ class Client extends Component implements ClientInterface
 
     /**
      * @param array|string    $url
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -324,7 +334,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param array|string    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -336,7 +346,7 @@ class Client extends Component implements ClientInterface
 
     /**
      * @param array|string    $url
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -349,7 +359,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param array|string    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -362,7 +372,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param array|string    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -375,7 +385,7 @@ class Client extends Component implements ClientInterface
     /**
      * @param array|string    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -383,143 +393,5 @@ class Client extends Component implements ClientInterface
     public function head($url, $body = [], $headers = [], $options = [])
     {
         return $this->self->request('HEAD', $url, $body, $headers, $options);
-    }
-
-    /**
-     * @param string|array           $files
-     * @param string|int|array|float $options
-     *
-     * @return string|array
-     */
-    public function download($files, $options = [])
-    {
-        if (is_string($files)) {
-            if (is_string($options) && !str_contains($options, '://')) {
-                $return_file = $options;
-            } else {
-                $path = parse_url($files, PHP_URL_PATH);
-                if ($pos = strrpos($path, '.')) {
-                    $ext = strtolower(substr($path, $pos));
-                    if ($ext === '.php' || preg_match('#^\.\w+$#', $ext) === 0) {
-                        $ext = '.tmp';
-                    }
-                } else {
-                    $ext = '.tmp';
-                }
-                $return_file = $this->alias->resolve('@tmp/download/' . md5($files . gethostname()) . $ext);
-            }
-            $files = [$files => $return_file];
-        } else {
-            if (is_int($options)) {
-                $options = ['concurrent' => $options];
-            } elseif (is_float($options)) {
-                $options = ['timeout' => $options];
-            } elseif (is_string($options)) {
-                $options = [preg_match('#^https?://#', $options) ? CURLOPT_REFERER : CURLOPT_USERAGENT => $options];
-            }
-            $return_file = null;
-        }
-
-        $mh = curl_multi_init();
-
-        $template = curl_init();
-
-        if (isset($options['timeout'])) {
-            $timeout = $options['timeout'];
-            unset($options['timeout']);
-        } else {
-            $timeout = 10;
-        }
-
-        if (isset($options['concurrent'])) {
-            $concurrent = $options['concurrent'];
-            unset($options['concurrent']);
-        } else {
-            $concurrent = 10;
-        }
-
-        curl_setopt($template, CURLOPT_TIMEOUT, $timeout);
-        curl_setopt($template, CURLOPT_CONNECTTIMEOUT, $timeout);
-        curl_setopt($template, CURLOPT_USERAGENT, self::USER_AGENT_IE);
-        curl_setopt($template, CURLOPT_HEADER, 0);
-        /** @noinspection CurlSslServerSpoofingInspection */
-        curl_setopt($template, CURLOPT_SSL_VERIFYHOST, false);
-        /** @noinspection CurlSslServerSpoofingInspection */
-        curl_setopt($template, CURLOPT_SSL_VERIFYPEER, false);
-
-        foreach ($options as $k => $v) {
-            if (is_int($k)) {
-                curl_setopt($template, $k, $v);
-            }
-        }
-
-        foreach ($files as $url => $file) {
-            $file = $this->alias->resolve($file);
-            if (is_file($file)) {
-                unset($files[$url]);
-            } else {
-                LocalFS::dirCreate(dirname($file));
-                $files[$url] = $file;
-            }
-        }
-
-        $handles = [];
-        $failed = [];
-        do {
-            foreach ($files as $url => $file) {
-                if (count($handles) === $concurrent) {
-                    break;
-                }
-                $curl = curl_copy_handle($template);
-                $id = (int)$curl;
-
-                curl_setopt($curl, CURLOPT_URL, $url);
-                $fp = fopen($file . '.tmp', 'wb');
-                curl_setopt($curl, CURLOPT_FILE, $fp);
-
-                curl_multi_add_handle($mh, $curl);
-                $handles[$id] = ['url' => $url, 'file' => $file, 'fp' => $fp];
-
-                unset($files[$url]);
-            }
-
-            $running = null;
-            while (curl_multi_exec($mh, $running) === CURLM_CALL_MULTI_PERFORM) {
-                null;
-            }
-
-            usleep(100);
-
-            while ($info = curl_multi_info_read($mh)) {
-                $curl = $info['handle'];
-                $id = (int)$curl;
-
-                $url = $handles[$id]['url'];
-                $file = $handles[$id]['file'];
-
-                fclose($handles[$id]['fp']);
-
-                if ($info['result'] === CURLE_OK) {
-                    rename($file . '.tmp', $file);
-                } else {
-                    $failed[$url] = curl_strerror($curl);
-                    unlink($file . '.tmp');
-                }
-
-                curl_multi_remove_handle($mh, $curl);
-                curl_close($curl);
-
-                unset($handles[$id]);
-            }
-        } while ($handles);
-
-        curl_multi_close($mh);
-        curl_close($template);
-
-        if ($return_file) {
-            return $failed ? false : $return_file;
-        } else {
-            return $failed;
-        }
     }
 }

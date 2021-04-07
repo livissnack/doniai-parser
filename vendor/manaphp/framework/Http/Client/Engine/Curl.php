@@ -4,7 +4,6 @@ namespace ManaPHP\Http\Client\Engine;
 
 use ManaPHP\Component;
 use ManaPHP\Exception\NotSupportedException;
-use ManaPHP\Helper\LocalFS;
 use ManaPHP\Http\Client\ConnectionException;
 use ManaPHP\Http\Client\EngineInterface;
 use ManaPHP\Http\Client\Response;
@@ -37,42 +36,22 @@ class Curl extends Component implements EngineInterface
 
     /**
      * @param \ManaPHP\Http\Client\Request $request
-     * @param bool                         $keepalive
+     * @param string                       $body
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function request($request, $keepalive = false)
+    public function request($request, $body)
     {
-        $body = $request->body;
-        if (is_array($body)) {
-            if (isset($request->headers['Content-Type']) && str_contains($request->headers['Content-Type'], 'json')) {
-                $body = json_stringify($body);
-            } else {
-                $hasFiles = false;
-                foreach ($body as $k => $v) {
-                    if (is_string($v) && strlen($v) > 1 && $v[0] === '@' && LocalFS::fileExists($v)) {
-                        $hasFiles = true;
-                        $file = $this->alias->resolve($v);
-                        $body[$k] = curl_file_create($file, mime_content_type($file) ?: null, basename($file));
-                    } elseif (is_object($v)) {
-                        $hasFiles = true;
-                    }
-                }
-
-                if (!$hasFiles) {
-                    $body = http_build_query($body);
-                }
-            }
-        }
-
         $content = '';
         $header_length = 0;
 
+        if (!isset($request->headers['Accept-Encoding'])) {
+            $request->headers['Accept-Encoding'] = 'gzip, deflate';
+        }
+
         if (($curl = $this->curl) === null) {
             $curl = curl_init();
-            if ($keepalive) {
-                $this->curl = $curl;
-            }
+            $this->curl = $curl;
         }
 
         try {
@@ -180,8 +159,9 @@ class Curl extends Component implements EngineInterface
 
             $success = true;
         } finally {
-            if (!$success || !$keepalive) {
+            if (!$success) {
                 curl_close($curl);
+                $this->curl = null;
             }
         }
 

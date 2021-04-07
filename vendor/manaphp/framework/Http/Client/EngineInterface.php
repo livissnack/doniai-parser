@@ -6,9 +6,9 @@ interface EngineInterface
 {
     /**
      * @param \ManaPHP\Http\Client\Request $request
-     * @param bool                         $keepalive
+     * @param string                       $body
      *
      * @return \ManaPHP\Http\Client\Response
      */
-    public function request($request, $keepalive = false);
+    public function request($request, $body);
 }

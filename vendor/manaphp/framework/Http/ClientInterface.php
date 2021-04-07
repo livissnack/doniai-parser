@@ -8,7 +8,7 @@ interface ClientInterface
      * @param string          $method
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -19,7 +19,7 @@ interface ClientInterface
      * @param string          $method
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -28,7 +28,7 @@ interface ClientInterface
 
     /**
      * @param string|array    $url
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -38,7 +38,7 @@ interface ClientInterface
     /**
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -47,7 +47,7 @@ interface ClientInterface
 
     /**
      * @param string|array    $url
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -57,7 +57,7 @@ interface ClientInterface
     /**
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -67,7 +67,7 @@ interface ClientInterface
     /**
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
@@ -77,18 +77,10 @@ interface ClientInterface
     /**
      * @param string|array    $url
      * @param string|array    $body
-     * @param array|string    $headers
+     * @param array           $headers
      * @param array|int|float $options
      *
      * @return \ManaPHP\Http\Client\Response
      */
     public function head($url, $body = [], $headers = [], $options = []);
-
-    /**
-     * @param string|array           $files
-     * @param string|int|float|array $options
-     *
-     * @return string|array
-     */
-    public function download($files, $options = []);
 }

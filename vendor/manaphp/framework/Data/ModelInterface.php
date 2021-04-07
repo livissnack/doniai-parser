@@ -24,7 +24,7 @@ interface ModelInterface extends TableInterface
      *
      * @return array
      */
-    public function map();
+    public function mapFields();
 
     /**
      * @param string $field
@@ -196,6 +196,14 @@ interface ModelInterface extends TableInterface
      * @return array
      */
     public static function values($field, $filters = null);
+
+    /**
+     * @param string $field
+     * @param array  $filters
+     *
+     * @return array
+     */
+    public static function kvalues($field, $filters = null);
 
     /**
      * @param string|array $filters

@@ -175,11 +175,11 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
     }
 
     /**
-     * map modle field to table column
+     * map model fields to table column
      *
      * @return array =model_var(new static)
      */
-    public function map()
+    public function mapFields()
     {
         return [];
     }
@@ -231,55 +231,30 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
     }
 
     /**
-     * @param string|array $fields  =model_var(new static) ?: model_field(new static) ?:
-     *                              [$k=>model_field(new static)]
+     * @param string|array $fields  =model_fields(new static) ?? model_field(new static)
      * @param array        $filters =model_var(new static)
      *
      * @return array
      */
     public static function lists($fields, $filters = null)
     {
+        if (is_string($fields)) {
+            $fields = [$fields];
+        }
+
         $sample = static::sample();
 
-        if (is_string($fields)) {
-            $keyField = $sample->primaryKey();
-
-            $query = static::select([$keyField, $fields])->where($filters);
-            if ($sample->hasField('display_order')) {
-                return $query->orderBy(['display_order' => SORT_DESC, $keyField => SORT_ASC])->execute();
-            } else {
-                return $query->orderBy([$keyField => SORT_ASC])->execute();
-            }
-        } elseif (isset($fields[0])) {
-            $keyField = $sample->primaryKey();
+        $keyField = $sample->primaryKey();
+        if (!in_array($keyField, $fields, true)) {
             array_unshift($fields, $keyField);
-
-            if ($sample->hasField('display_order')) {
-                $order = ['display_order' => SORT_DESC, $keyField => SORT_ASC];
-            } else {
-                $order = [$keyField => SORT_ASC];
-            }
-            return static::select($fields)->where($filters)->orderBy($order)->execute();
-        } else {
-            $keyField = key($fields);
-            $valueField = current($fields);
-
-            $list = [];
-            foreach (static::select([$keyField, $valueField])->where($filters)->execute() as $v) {
-                $key = $v[$keyField];
-                $value = $v[$valueField];
-
-                if (!isset($list[$key])) {
-                    $list[$key] = $value;
-                } elseif (is_array($list[$key])) {
-                    $list[$key][] = $value;
-                } else {
-                    $list[$key] = [$list[$key], $value];
-                }
-            }
-
-            return $list;
         }
+
+        if ($sample->hasField('display_order')) {
+            $order = ['display_order' => SORT_DESC, $keyField => SORT_ASC];
+        } else {
+            $order = [$keyField => SORT_ASC];
+        }
+        return static::select($fields)->where($filters)->orderBy($order)->execute();
     }
 
     /**
@@ -295,7 +270,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
         }
 
         if (!is_int($fieldsOrTtl)) {
-            return static::firstOrFail($id);
+            return static::firstOrFail($id, $fieldsOrTtl);
         }
 
         $ttl = $fieldsOrTtl;
@@ -303,7 +278,7 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
 
         $r = apcu_fetch($key, $success);
         if (!$success) {
-            $r = static::firstOrFail($id);
+            $r = static::firstOrFail($id, $fieldsOrTtl);
             apcu_store($key, $r, $ttl);
         }
 
@@ -486,6 +461,25 @@ abstract class Model extends Table implements ModelInterface, ArrayAccess, JsonS
             throw new ParameterOrderException(__METHOD__ . ' field');
         }
         return static::where($filters)->orderBy([$field => SORT_ASC])->values($field);
+    }
+
+    /**
+     * @param string $field   =model_field(new static)
+     * @param array  $filters =model_var(new static)
+     *
+     * @return array
+     */
+    public static function kvalues($field, $filters = null)
+    {
+        $keyField = static::sample()->primaryKey();
+        $valueField = $field;
+
+        $kvalues = [];
+        foreach (static::select([$keyField, $valueField])->where($filters)->execute() as $v) {
+            $kvalues[$v[$keyField]] = $v[$valueField];
+        }
+
+        return $kvalues;
     }
 
     /**
