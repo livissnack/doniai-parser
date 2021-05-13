@@ -15,7 +15,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "App\\": "app/"
+      "App\\": "app/",
+      "Livissnack\\AliSms\\": "packages/livissnack/ali-sms/src/"
     }
   },
   "scripts": {

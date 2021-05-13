@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'ManaPHP\\' => array($vendorDir . '/manaphp/framework'),
+    'Livissnack\\AliSms\\' => array($baseDir . '/packages/livissnack/ali-sms/src'),
     'App\\' => array($baseDir . '/app'),
 );

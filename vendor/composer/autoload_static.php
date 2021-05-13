@@ -11,6 +11,10 @@ class ComposerStaticInitc5fb0847cc99c7d8d1380cf1ec16c635
         array (
             'ManaPHP\\' => 8,
         ),
+        'L' => 
+        array (
+            'Livissnack\\AliSms\\' => 18,
+        ),
         'A' => 
         array (
             'App\\' => 4,
@@ -21,6 +25,10 @@ class ComposerStaticInitc5fb0847cc99c7d8d1380cf1ec16c635
         'ManaPHP\\' => 
         array (
             0 => __DIR__ . '/..' . '/manaphp/framework',
+        ),
+        'Livissnack\\AliSms\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/packages/livissnack/ali-sms/src',
         ),
         'App\\' => 
         array (
