@@ -17,9 +17,10 @@ class UserController extends Controller
     const REGISTER_KEY_PREFIX = 'sms:register:';
     const FORGET_PASSWORD_KEY_PREFIX = 'sms:forget:';
 
-    public function regView()
+    public function showAction()
     {
-        return $this->view->render();
+        $name = 'guanxin';
+        return $this->view->setVar('name', $name);
     }
 
     public function createAction()

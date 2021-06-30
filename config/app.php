@@ -21,7 +21,8 @@ return [
         'db'         => env('DB_URL'),
         'redis'      => env('REDIS_URL'),
         'logger'     => ['level' => env('LOGGER_LEVEL', 'info')],
-        'translator' => ['locale', env('asda', 'sad'), 'dir' => path('')]
+        'translator' => ['locale', env('locale', 'en'), 'dir' => path('')],
+        'mailer'     => env('MAILER_URL'),
     ],
     'services'   => [],
     'plugins'    => [

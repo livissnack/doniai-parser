@@ -1,0 +1,35 @@
+<div class="mana_container">
+    <section class="hero mt-80">
+        <div class="hero-body text-center">
+            <p class="title">
+                聚合API市场
+            </p>
+            <p class="subtitle">
+                更多优质的Api，只为服务更优质的你
+            </p>
+        </div>
+
+        <div class="shop-box">
+            <?= e($name); ?>
+        </div>
+    </section>
+</div>
+
+
+@section('js')
+    <script>
+        vm = new App({
+            data: {
+                items: []
+            },
+            mounted() {
+                this.get_shops()
+            },
+            methods: {
+                get_shops() {
+                    this.ajax_get("/api", (res) => this.items = res)
+                }
+            }
+        });
+    </script>
+@append
