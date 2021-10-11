@@ -13,7 +13,7 @@ services:
   user_nginx:
     image: nginx:1.19.6
     volumes:
-      - /usr/share/zoneinfo/PRC:/etc/localtime
+#      - /usr/share/zoneinfo/PRC:/etc/localtime
       - ../:/var/www/html
       - .nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - /data/volumes/${COMPOSE_PROJECT_NAME}/user-nginx/log:/var/log/nginx
