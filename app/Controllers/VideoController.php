@@ -6,7 +6,7 @@ class VideoController extends Controller
 {
     protected $_request_key = 'request::records';
 
-    protected $_max_count = 5;
+    protected $_max_count = 20;
 
     public function analyzeAction()
     {
