@@ -53,7 +53,7 @@
                     <span>YouTube</span>
                 </a>
 
-                <a class="navbar-item">
+                <a class="navbar-item" href="/bilibili">
                     <img src="/static/imgs/bilibili.svg" class="brand-logo" alt="哔哩哔哩">
                     <span>哔哩哔哩</span>
                 </a>

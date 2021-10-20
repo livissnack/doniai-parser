@@ -12,5 +12,6 @@ class Router extends \ManaPHP\Http\Router
         $this->add('/', 'Index::index');
         $this->add('/api', 'Api::index');
         $this->add('/test', 'Test::index');
+        $this->add('/bilibili', 'Bilibili::index');
     }
 }

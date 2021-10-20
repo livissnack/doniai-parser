@@ -1,0 +1,135 @@
+<div class="mana_container">
+    <section class="hero mt-80">
+        <div class="hero-body text-center">
+            <p class="title">
+                Bilibili无水印在线解析下载
+            </p>
+            <p class="subtitle">
+                Bilibili限制了解析出来的链接只能手机打开
+            </p>
+        </div>
+
+        <div class="search-box">
+            <div class="field input-fullwidth">
+                <p class="control has-icons-left has-icons-right">
+                    <input class="input is-danger" v-model.trim="target_url" @focus="do_focus" @blur="do_blur" type="text" placeholder="打开短视频APP，复制短视频粘贴到输入框，再点击解析...">
+                    <span class="icon is-small is-left">
+                        <img src="/static/imgs/file-search.svg" alt="文件搜索">
+                    </span>
+                    <span class="icon is-small is-right clear-cursor">
+                        <img src="/static/imgs/fuhao/check.svg" alt="检测" v-if="!is_focus && !is_empty(video_url)">
+                        <img src="/static/imgs/fuhao/close.svg" alt="清除" v-if="is_focus && !is_empty(video_url)" @click.native="do_clear">
+                    </span>
+                </p>
+            </div>
+            <div>
+                <button class="button is-info" @click="do_parse">解析一下</button>
+            </div>
+        </div>
+
+        <div class="parser-content" v-show="is_show">
+            <div class="parser-box">
+                <div class="video-box">
+                    <h3 class="video-title text-center">{{desc}}</h3>
+                    <video id="video_player" controls="controls" autoplay="autoplay" name="media">
+                        <source :src="video_url" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <div class="download-box">
+                <button class="button is-danger" @click="do_download">视频下载</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+@section('js')
+    <script>
+        vm = new App({
+            data: {
+                is_focus: false,
+                is_show: false,
+                target_url: '',
+                video_url: '',
+                music_url: '',
+                cover_url: '',
+                desc: ''
+            },
+            methods: {
+                do_parse() {
+                    if (this.is_empty(this.target_url)) {
+                        this.$buefy.snackbar.open({
+                            message: '解析地址不能为空',
+                            type: 'is-warning',
+                            position: 'is-bottom-right',
+                            actionText: 'MSG'
+                        })
+                        return
+                    }
+                    this.ajax_post("/bilibili/analyze", {video_url: this.target_url}, (res) => {
+                        console.log(res)
+                        if (!this.is_empty(res.video_url)) {
+                            this.is_show = true;
+                            this.video_url = res.video_url
+                            this.music_url = res.music_url
+                            this.cover_url = res.cover_url
+                            this.desc = res.desc
+                            this.load_video_url(res.video_url)
+                        } else {
+                            this.$buefy.snackbar.open({
+                                message: '解析出错',
+                                type: 'is-danger',
+                                position: 'is-bottom-right',
+                                actionText: 'MSG'
+                            })
+                        }
+                    });
+                },
+
+                load_video_url(url) {
+                    let video_player = document.getElementById('video_player')
+                    video_player.setAttribute('src', url)
+                },
+
+                do_download() {
+                    let link = document.createElement('a')
+                    let url = this.video_url
+                    console.log(url)
+                    // 这里是将url转成blob地址，
+                    fetch(url).then(res => res.blob()).then(blob => { // 将链接地址字符内容转变成blob地址
+                        link.href = URL.createObjectURL(blob)
+                        link.download = ''
+                        document.body.appendChild(link)
+                        link.click()
+                    })
+                },
+
+                do_focus() {
+                    this.is_focus = true
+                },
+
+                do_clear() {
+                    this.target_url = ''
+                    console.log('clear')
+                },
+
+                do_blur() {
+                    let reg = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi
+                    let regex = new RegExp(reg)
+                    if(this.target_url.match(regex)) {
+                        this.is_focus = false
+                    } else {
+                        this.is_focus = true
+                    }
+                    console.log('blur')
+                },
+
+                is_empty(str) {
+                    return str.length === 0 || !str.trim()
+                }
+            }
+        });
+    </script>
+@append
