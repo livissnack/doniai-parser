@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/manaphp/framework.git",
-                "reference": "acf6aca66945d1fe50c16867f8b87a2fd7a8092e"
+                "reference": "0456cfe45612d2d55069a07b98f66c0d0149053e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/manaphp/framework/zipball/acf6aca66945d1fe50c16867f8b87a2fd7a8092e",
-                "reference": "acf6aca66945d1fe50c16867f8b87a2fd7a8092e",
+                "url": "https://api.github.com/repos/manaphp/framework/zipball/0456cfe45612d2d55069a07b98f66c0d0149053e",
+                "reference": "0456cfe45612d2d55069a07b98f66c0d0149053e",
                 "shasum": ""
             },
             "type": "library",
@@ -49,7 +49,7 @@
                 "issues": "https://github.com/manaphp/framework/issues",
                 "source": "https://github.com/manaphp/framework/tree/develop"
             },
-            "time": "2021-03-26T12:25:10+00:00"
+            "time": "2021-08-07T02:46:37+00:00"
         }
     ],
     "packages-dev": [],

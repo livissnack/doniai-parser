@@ -100,3 +100,13 @@ function seqSearch($arr, $k) {
 function random_sms_code() {
     return random_int(200001, 999999);
 }
+
+
+/**
+ * @param $url
+ * 获取域名
+ * @return array|false|int|string|null
+ */
+function getDomain($url) {
+    return parse_url($url, 1);
+}

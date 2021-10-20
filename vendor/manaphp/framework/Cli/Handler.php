@@ -212,11 +212,12 @@ class Handler extends Component implements HandlerInterface
             }
         }
 
-        $actionMethod = $action . 'Action';
-        $this->request->completeShortNames($instance, $actionMethod);
+        $method = $action . 'Action';
+        $this->request->completeShortNames($instance, $method);
+        $this->fireEvent('cli:invoking', compact('instance', 'method', 'action'));
         $r = $instance->invoke($action);
-
-        return is_int($r) ? $r : 0;
+        $this->fireEvent('cli:invoked', compact('instance', 'method', 'action'));
+        return is_int($r) ? $r : $this->console->error($r);
     }
 
     /**

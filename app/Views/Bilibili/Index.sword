@@ -23,7 +23,7 @@
                 </p>
             </div>
             <div>
-                <button class="button is-info" @click="do_parse">解析一下</button>
+                <button class="button is-info is_loading" @click="do_parse" :disabled="is_disabled">解析一下</button>
             </div>
         </div>
 
@@ -49,6 +49,8 @@
     <script>
         vm = new App({
             data: {
+                is_disabled: false,
+                is_loading_str: '',
                 is_focus: false,
                 is_show: false,
                 target_url: '',
@@ -58,7 +60,9 @@
                 desc: ''
             },
             methods: {
-                do_parse() {
+                async do_parse() {
+                    this.is_loading_str = 'is_loading'
+                    this.is_disabled = true
                     if (this.is_empty(this.target_url)) {
                         this.$buefy.snackbar.open({
                             message: '解析地址不能为空',
@@ -68,8 +72,7 @@
                         })
                         return
                     }
-                    this.ajax_post("/bilibili/analyze", {video_url: this.target_url}, (res) => {
-                        console.log(res)
+                    await this.ajax_post("/bilibili/analyze", {video_url: this.target_url}, (res) => {
                         if (!this.is_empty(res.video_url)) {
                             this.is_show = true;
                             this.video_url = res.video_url
@@ -85,6 +88,8 @@
                                 actionText: 'MSG'
                             })
                         }
+                        this.is_loading_str = ''
+                        this.is_disabled = false
                     });
                 },
 
@@ -93,12 +98,11 @@
                     video_player.setAttribute('src', url)
                 },
 
-                do_download() {
-                    let link = document.createElement('a')
+                async do_download() {
+                    let link = await document.createElement('a')
                     let url = this.video_url
-                    console.log(url)
                     // 这里是将url转成blob地址，
-                    fetch(url).then(res => res.blob()).then(blob => { // 将链接地址字符内容转变成blob地址
+                    await fetch(url).then(res => res.blob()).then(blob => { // 将链接地址字符内容转变成blob地址
                         link.href = URL.createObjectURL(blob)
                         link.download = ''
                         document.body.appendChild(link)
@@ -112,7 +116,6 @@
 
                 do_clear() {
                     this.target_url = ''
-                    console.log('clear')
                 },
 
                 do_blur() {
@@ -123,7 +126,6 @@
                     } else {
                         this.is_focus = true
                     }
-                    console.log('blur')
                 },
 
                 is_empty(str) {

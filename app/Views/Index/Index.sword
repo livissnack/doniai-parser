@@ -69,7 +69,6 @@
                         return
                     }
                     this.ajax_post("/video/analyze", {video_url: this.target_url}, (res) => {
-                        console.log(res)
                         if (!this.is_empty(res.video_url)) {
                             this.is_show = true;
                             this.video_url = res.video_url
@@ -93,11 +92,11 @@
                     video_player.setAttribute('src', url)
                 },
 
-                do_download() {
-                    let link = document.createElement('a')
+                async do_download() {
+                    let link = await document.createElement('a')
                     let url = this.video_url
                     // 这里是将url转成blob地址，
-                    fetch(url).then(res => res.blob()).then(blob => { // 将链接地址字符内容转变成blob地址
+                    await fetch(url).then(res => res.blob()).then(blob => { // 将链接地址字符内容转变成blob地址
                         link.href = URL.createObjectURL(blob)
                         link.download = ''
                         document.body.appendChild(link)
@@ -111,7 +110,6 @@
 
                 do_clear() {
                     this.target_url = ''
-                    console.log('clear')
                 },
 
                 do_blur() {
@@ -122,7 +120,6 @@
                     } else {
                         this.is_focus = true
                     }
-                    console.log('blur')
                 },
 
                 is_empty(str) {

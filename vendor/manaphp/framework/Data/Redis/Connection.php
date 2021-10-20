@@ -17,6 +17,11 @@ class Connection extends Component
     protected $uri;
 
     /**
+     * @var bool
+     */
+    protected $cluster = false;
+
+    /**
      * @var string
      */
     protected $host;
@@ -30,6 +35,11 @@ class Connection extends Component
      * @var float
      */
     protected $timeout = 0.0;
+
+    /**
+     * @var int
+     */
+    protected $read_timeout = 60;
 
     /**
      * @var string
@@ -77,7 +87,13 @@ class Connection extends Component
 
         $parts = parse_url($uri);
 
-        if ($parts['scheme'] !== 'redis') {
+        if ($parts['scheme'] === 'redis') {
+            $this->host = $parts['host'] ?? '127.0.0.1';
+            $this->port = isset($parts['port']) ? (int)$parts['port'] : 6379;
+        } elseif ($parts['scheme'] === 'cluster') {
+            $this->cluster = true;
+            $this->host = $parts['host'] . ':' . ($parts['port'] ?? '6379');
+        } else {
             throw new DsnFormatException(['`%s` is invalid, `%s` scheme is not recognized', $uri, $parts['scheme']]);
         }
 
@@ -105,6 +121,10 @@ class Connection extends Component
 
             if (isset($query['timeout'])) {
                 $this->timeout = (float)$query['timeout'];
+            }
+
+            if (isset($query['read_timeout'])) {
+                $this->read_timeout = $query['read_timeout'];
             }
 
             if (isset($query['persistent'])) {
@@ -142,9 +162,18 @@ class Connection extends Component
 
             $this->fireEvent('redis:connecting', compact('uri'));
 
-            $redis = $this->getNew('Redis');
+            if ($this->cluster) {
+                $seeds = [];
+                foreach (explode(',', $this->host) as $host) {
+                    $seeds[] = str_contains($host, ':') ? $host : "$host:6379";
+                }
+                $redis = $this->getNew(
+                    'RedisCluster',
+                    [null, $seeds, $this->timeout, $this->read_timeout, $this->persistent, $this->auth]
+                );
+            } else {
+                $redis = $this->getNew('Redis');
 
-            try {
                 if ($this->persistent) {
                     if (!@$redis->pconnect($this->host, $this->port, $this->timeout, $this->db)) {
                         throw new ConnectionException(['connect to `:uri` failed', 'uri' => $this->uri]);
@@ -161,12 +190,11 @@ class Connection extends Component
                     throw new RuntimeException(['select `:db` db failed', 'db' => $this->db]);
                 }
 
-                $this->fireEvent('redis:connected', compact('uri', 'redis'));
-            } catch (Throwable $exception) {
-                $this->fireEvent('redis:connected', compact('uri', 'exception'));
+                $redis->setOption(Redis::OPT_READ_TIMEOUT, $this->read_timeout);
             }
 
-            $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
+            $this->fireEvent('redis:connected', compact('uri', 'redis'));
+
             $this->redis = $redis;
         }
 
@@ -211,16 +239,16 @@ class Connection extends Component
      */
     public function call($name, $arguments)
     {
-        $redis = $this->self->getConnect();
+        $redis = $this->getConnect();
 
         try {
             $r = @$redis->$name(...$arguments);
         } catch (\Exception  $exception) {
             $r = null;
             $failed = true;
-            if (!$this->multi && !$this->self->ping()) {
-                $this->self->close();
-                $this->self->getConnect();
+            if (!$this->multi && !$this->ping()) {
+                $this->close();
+                $this->getConnect();
 
                 try {
                     $r = @$redis->$name(...$arguments);

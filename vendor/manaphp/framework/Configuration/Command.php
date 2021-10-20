@@ -10,9 +10,11 @@ use ManaPHP\Helper\Arr;
 class Command extends \ManaPHP\Cli\Command
 {
     /**
+     * dump of the app.php
+     *
      * @param string $path
      */
-    public function defaultAction($path = '')
+    public function dumpAction($path = '')
     {
         $config = $this->configure->getConfig();
         $config = Arr::get($config, $path);
