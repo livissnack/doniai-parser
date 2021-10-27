@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Services\VideoParseLimitService;
 
 /**
- * Class VideoController
+ * Class BilibiliController
  *
  * @property-read VideoParseLimitService                                 $videoParseLimitService
  * @package App\Controllers
